@@ -1,2 +1,6 @@
-package com.company;public class GUI {
+package com.company;
+
+public class GUI {
+
+
 }
