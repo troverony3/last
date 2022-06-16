@@ -9,7 +9,7 @@ public class Canal extends RiverPathItem {
 
     public Canal(int lengthInMeters, JRadioButton busyIndicator) {
         super(busyIndicator);
-        tactsToCross = lengthInMeters/SHIP_SPEED_METERS_PER_SEC;
+        tactsToCross = lengthInMeters / SHIP_SPEED_METERS_PER_SEC;
     }
 
     @Override

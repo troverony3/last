@@ -16,13 +16,13 @@ public abstract class RiverPathItem {
         return state;
     }
 
-    public void startCrossingUpThePath(){
+    public void startCrossingUpThePath() {
         currentTactSinceStart = 0;
         state.setSelected(true);
         this.tactsToCross = getTactsToCross(true);
     }
 
-    public void startCrossingDownThePath(){
+    public void startCrossingDownThePath() {
         currentTactSinceStart = 0;
         state.setSelected(true);
         this.tactsToCross = getTactsToCross(false);

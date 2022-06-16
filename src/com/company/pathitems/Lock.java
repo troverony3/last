@@ -2,7 +2,7 @@ package com.company.pathitems;
 
 import javax.swing.*;
 
-public class Lock extends RiverPathItem{
+public class Lock extends RiverPathItem {
     private static final int TACTS_TO_OPEN_CLOSE_GATE = 1;
     private static final int TACTS_TO_ENTER = 5;
     private static final int TACTS_TO_LEAVE = 1;
