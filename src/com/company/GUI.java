@@ -2,10 +2,6 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 
 public class GUI extends JFrame {
@@ -44,14 +40,15 @@ public class GUI extends JFrame {
     }
 
     private Thread getWorkingThread() {
-        return new Thread(() -> path.getPath().forEach(node -> {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
+        return new Thread(() -> {
+            path.start();
+            while (path.tact()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
-            node.setSelected(true);
-        }));
+        });
     }
 }
