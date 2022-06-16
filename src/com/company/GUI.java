@@ -4,10 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 
 public class GUI extends JFrame {
     private Path path = new Path();
+    private Thread thread;
 
     public GUI() {
         super("Симулятор Волго-Балтийского речного водного пути");
@@ -17,37 +20,38 @@ public class GUI extends JFrame {
         Container contentPane = this.getContentPane();
         contentPane.setLayout(new GridLayout(0, 1));
 
-        path.getPath().forEach(contentPane::add);
+        ButtonGroup buttonGroup = new ButtonGroup();
+        path.getPath().forEach(comp -> {
+            contentPane.add(comp);
+            buttonGroup.add(comp);
+        });
 
         Dimension dimension = new Dimension(120, 40);
         JButton beginbutton = new JButton("Начать");
         beginbutton.setSize(dimension);
-        beginbutton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                path.getPath().element().setSelected(true);
-                new Thread((new Runnable() {
-                    @Override
-                    public void run() {
-                        public void run(){
-                            int i;
-                            for (i = 1; i <= 24; i++) {
-                                path.getPath().element().setSelected(true);
-                            }
-                            });
-                        try {
-                            java.lang.Thread.sleep(100);
-                        }
-                        catch(Exception e) { }
-                    }
-
-            }).start();
-        );}
 
         JButton endbutton = new JButton("Завершить");
         endbutton.setMaximumSize(dimension);
         endbutton.setSize(dimension);
         contentPane.add(beginbutton);
         contentPane.add(endbutton);
+
+        beginbutton.addActionListener(e -> {
+            thread = getWorkingThread();
+            thread.start();
+        });
+        endbutton.addActionListener(e -> thread.interrupt());
+    }
+
+    private Thread getWorkingThread() {
+        return new Thread(() -> path.getPath().forEach(node -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+            node.setSelected(true);
+        }));
     }
 }
