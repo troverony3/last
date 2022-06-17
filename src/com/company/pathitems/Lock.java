@@ -9,12 +9,12 @@ public class Lock extends RiverPathItem {
     private static final int TACTS_TO_PARK = 1;
     private boolean empty = true;
 
-    public Lock(JRadioButton busyIndicator) {
-        super(busyIndicator);
+    public Lock(JLabel label, JButton state) {
+        super(label, state);
     }
 
     @Override
-    protected int getTactsToCross(boolean movingFormDown) {
+    public int getTactsToCross(boolean movingFormDown) {
         return tacksToLevelWater(movingFormDown) + TACTS_TO_OPEN_CLOSE_GATE + TACTS_TO_ENTER + TACTS_TO_PARK + TACTS_TO_OPEN_CLOSE_GATE + TACTS_TO_LEAVE;
     }
 

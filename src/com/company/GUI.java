@@ -2,15 +2,15 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 
 public class GUI extends JFrame {
     private int currentTact = 0;
-    private final JLabel statusLabel = new JLabel(" Ожидание ");;
+    private final JLabel statusLabel = new JLabel(" Ожидание ");
     private final JButton beginbutton = new JButton("Начать автоматически");
     private final JButton manualbutton = new JButton("Начать пошагово");
     private final JButton endbutton = new JButton("Завершить");
-    private final ButtonGroup buttonGroup = new ButtonGroup();
     private final Path path = new Path();
     private Thread thread;
 
@@ -20,15 +20,14 @@ public class GUI extends JFrame {
         this.setBounds(1, 1, 800, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container contentPane = this.getContentPane();
-        contentPane.setLayout(new GridLayout(0, 1));
+        contentPane.setLayout(new GridLayout(0, 2));
 
-        path.getPath().forEach(comp -> {
-            contentPane.add(comp);
-            buttonGroup.add(comp);
+        path.getPath().forEach(p -> {
+            contentPane.add(p.getLabel());
+            contentPane.add(p.getState());
         });
 
         statusLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(statusLabel);
 
 
         Dimension dimension = new Dimension(120, 40);
@@ -38,6 +37,7 @@ public class GUI extends JFrame {
         manualbutton.setSize(dimension);
         contentPane.add(manualbutton);
 
+        contentPane.add(statusLabel);
         endbutton.setMaximumSize(dimension);
         endbutton.setSize(dimension);
         endbutton.setEnabled(false);
@@ -57,7 +57,9 @@ public class GUI extends JFrame {
             endbutton.setEnabled(true);
 
             if (currentTact == 0) {
-                path.start();
+                path.start(List.of(
+                        new Ship("от Москвы", true, 0),
+                        new Ship("от Питера", false, 20)));
             }
 
             statusLabel.setText(" Такт № "+ currentTact +" ");
@@ -83,12 +85,14 @@ public class GUI extends JFrame {
         currentTact = 0;
         statusLabel.setText(lable);
         path.stop();
-        buttonGroup.clearSelection();
     }
 
     private Thread getWorkingThread() {
         return new Thread(() -> {
-            path.start();
+            path.start(List.of(
+                    new Ship("от Москвы", true, 0),
+                    new Ship("от Питера", false, 20)));
+
             while (path.tact()) {
                 statusLabel.setText(" Такт № "+ currentTact + " ");
                 currentTact ++;
@@ -101,7 +105,7 @@ public class GUI extends JFrame {
                 }
             }
 
-            stopSimulation(" Ручная симуляция окончена ");
+            stopSimulation(" Автоматическая симуляция окончена ");
         });
     }
 }

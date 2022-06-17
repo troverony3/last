@@ -1,44 +1,54 @@
 package com.company.pathitems;
 
+import com.company.Ship;
+
 import javax.swing.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class RiverPathItem {
-    protected int tactsToCross;
-    protected int currentTactSinceStart;
 
-    private final JRadioButton state;
+    private final JLabel label;
+    private final JButton state;
 
-    protected RiverPathItem(JRadioButton state) {
+    private final Set<Ship> ships = new HashSet<>();
+
+
+    protected RiverPathItem(JLabel label, JButton state) {
+        this.label = label;
         this.state = state;
     }
 
-    public JRadioButton getState() {
+    public JComponent getLabel() {
+        return label;
+    }
+
+    public JComponent getState() {
         return state;
     }
 
-    public void startCrossingUpThePath() {
-        currentTactSinceStart = 0;
-        state.setSelected(true);
-        this.tactsToCross = getTactsToCross(true);
+    public void removeShip(Ship s){
+        ships.remove(s);
+        setState();
     }
 
-    public void startCrossingDownThePath() {
-        currentTactSinceStart = 0;
-        state.setSelected(true);
-        this.tactsToCross = getTactsToCross(false);
+    public void moveShipIn(Ship ship) {
+        ships.add(ship);
+        setState();
+    }
+
+    private void setState() {
+        state.setText(ships.stream().map(Ship::getName).collect(Collectors.joining(" ")));
     }
 
     public void stop(){
-        currentTactSinceStart = 0;
+        state.setText("");
     }
 
-    public void tact() {
-        currentTactSinceStart++;
+    public boolean haveCrossed(Ship ship) {
+        return ship.getTactsOnItem() >= getTactsToCross(ship.isMovingFromUp());
     }
 
-    public boolean haveCrossed() {
-        return currentTactSinceStart >= tactsToCross;
-    }
-
-    protected abstract int getTactsToCross(boolean movingFromUp);
+    public abstract int getTactsToCross(boolean movingFromUp);
 }

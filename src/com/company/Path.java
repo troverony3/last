@@ -9,62 +9,61 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Path {
-    private int currentItem;
-
     private final List<RiverPathItem> path = initPath();
+    private List<Ship> ships = new ArrayList<>();
 
-    public List<JRadioButton> getPath() {
-        return path.stream().map(RiverPathItem::getState).toList();
+    public List<RiverPathItem> getPath() {
+        return path;
     }
 
-    public void start() {
-        currentItem = path.size() - 1;
-        path.get(currentItem).startCrossingUpThePath();
+    public void start(List<Ship> ships) {
+        this.ships = ships;
+        this.ships.forEach(s -> s.setRiverSize(path.size()));
     }
 
     public void stop() {
         path.forEach(RiverPathItem::stop);
+        ships = new ArrayList<>();
     }
 
     public boolean tact() {
-        if (currentItem == 0) {
-            if (path.get(0).haveCrossed()) {
-                return false;
+        ships.forEach(s -> {
+            RiverPathItem riverPathItem = path.get(s.getCurrentPosition());
+            if (riverPathItem.haveCrossed(s)) {
+                s.moveOneFurther();
+                riverPathItem.removeShip(s);
             }
-        }
-        RiverPathItem riverPathItem = path.get(currentItem);
-        if (riverPathItem.haveCrossed()) {
-            currentItem--;
+            path.get(s.getCurrentPosition()).moveShipIn(s);
+            s.tact();
+        });
+        return anybodyMoving();
+    }
 
-            path.get(currentItem).startCrossingUpThePath();
-
-            return true;
-        }
-        riverPathItem.tact();
-        return true;
+    public boolean anybodyMoving() {
+        return ships.stream().map(Ship::isMoving).reduce((a, b) -> a || b).orElse(false);
     }
 
     private static List<RiverPathItem> initPath() {
         final List<RiverPathItem> path = new ArrayList<>();
-        path.add(new Canal(860, new JRadioButton("Канал №52")));
-        path.add(new Lock(new JRadioButton("шлюз1")));
-        path.add(new Canal(1050, new JRadioButton("Канал №53 ")));
-        path.add(new Canal(8350, new JRadioButton("Судовой ход №54")));
-        path.add(new Canal(600, new JRadioButton("Канал №55")));
-        path.add(new Lock(new JRadioButton("шлюз2")));
-        path.add(new Canal(600, new JRadioButton("Канал №56 ")));
-        path.add(new Canal(4060, new JRadioButton("Судовой ход №57 ")));
-        path.add(new Canal(600, new JRadioButton("Канал №58")));
-        path.add(new Lock(new JRadioButton("шлюз 3")));
-        path.add(new Canal(780, new JRadioButton("Канал №59 ")));
-        path.add(new Lock(new JRadioButton("Шлюз №4")));
-        path.add(new Canal(780, new JRadioButton("Канал №60 ")));
-        path.add(new Lock(new JRadioButton("Шлюз №5")));
-        path.add(new Canal(600, new JRadioButton("Канал №61 ")));
-        path.add(new Canal(4380, new JRadioButton("Канал судоходный №62 ")));
-        path.add(new Canal(790, new JRadioButton("Канал №63")));
-        path.add(new Lock(new JRadioButton("Шлюз №6")));
-        path.add(new Canal(850, new JRadioButton("Канал №64")));
+        path.add(new Canal(860, new JLabel("Канал №52"), new JButton()));
+        path.add(new Lock(new JLabel("шлюз1"), new JButton()));
+        path.add(new Canal(1050, new JLabel("Канал №53 "), new JButton()));
+        path.add(new Canal(8350, new JLabel("Судовой ход №54"), new JButton()));
+        path.add(new Canal(600, new JLabel("Канал №55"), new JButton()));
+        path.add(new Lock(new JLabel("шлюз2"), new JButton()));
+        path.add(new Canal(600, new JLabel("Канал №56 "), new JButton()));
+        path.add(new Canal(4060, new JLabel("Судовой ход №57 "), new JButton()));
+        path.add(new Canal(600, new JLabel("Канал №58"), new JButton()));
+        path.add(new Lock(new JLabel("шлюз 3"), new JButton()));
+        path.add(new Canal(780, new JLabel("Канал №59 "), new JButton()));
+        path.add(new Lock(new JLabel("Шлюз №4"), new JButton()));
+        path.add(new Canal(780, new JLabel("Канал №60 "), new JButton()));
+        path.add(new Lock(new JLabel("Шлюз №5"), new JButton()));
+        path.add(new Canal(600, new JLabel("Канал №61 "), new JButton()));
+        path.add(new Canal(4380, new JLabel("Канал судоходный №62 "), new JButton()));
+        path.add(new Canal(790, new JLabel("Канал №63"), new JButton()));
+        path.add(new Lock(new JLabel("Шлюз №6"), new JButton()));
+        path.add(new Canal(850, new JLabel("Канал №64"), new JButton()));
         return path;
     }
 }
