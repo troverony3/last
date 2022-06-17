@@ -1,5 +1,7 @@
 package com.company.pathitems;
 
+import com.company.Ship;
+
 import javax.swing.*;
 
 public class Lock extends RiverPathItem {
@@ -24,18 +26,20 @@ public class Lock extends RiverPathItem {
         empty = true;
     }
 
+    @Override
+    public void moveShipIn(Ship ship) {
+        super.moveShipIn(ship);
+        empty = !empty;
+    }
+
     private int tacksToLevelWater(boolean movingFormDown) {
         if (movingFormDown && empty) {
-            empty = !empty;
             return 0;
         } else if (movingFormDown && !empty) {
-            empty = !empty;
             return 5;
         } else if (!movingFormDown && empty) {
-            empty = !empty;
             return 5;
         } else {
-            empty = !empty;
             return 0;
         }
     }

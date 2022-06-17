@@ -43,6 +43,7 @@ public abstract class RiverPathItem {
     }
 
     public void stop(){
+        ships.clear();
         state.setText("");
     }
 
