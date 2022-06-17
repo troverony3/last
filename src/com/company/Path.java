@@ -19,6 +19,7 @@ public class Path {
 
     public void start() {
         currentItem = path.size() - 1;
+        path.get(currentItem).startCrossingUpThePath();
     }
 
     public boolean tact() {
