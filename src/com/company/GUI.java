@@ -6,8 +6,11 @@ import java.awt.*;
 
 public class GUI extends JFrame {
     private int currentTact = 0;
-    private JLabel statusLabel;
-    private Mode mode = null;
+    private final JLabel statusLabel = new JLabel(" Ожидание ");;
+    private final JButton beginbutton = new JButton("Начать автоматически");
+    private final JButton manualbutton = new JButton("Начать пошагово");
+    private final JButton endbutton = new JButton("Завершить");
+    private final ButtonGroup buttonGroup = new ButtonGroup();
     private final Path path = new Path();
     private Thread thread;
 
@@ -19,53 +22,48 @@ public class GUI extends JFrame {
         Container contentPane = this.getContentPane();
         contentPane.setLayout(new GridLayout(0, 1));
 
-        ButtonGroup buttonGroup = new ButtonGroup();
         path.getPath().forEach(comp -> {
             contentPane.add(comp);
             buttonGroup.add(comp);
         });
 
-        statusLabel = new JLabel(" Ожидание ");
         statusLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         contentPane.add(statusLabel);
 
 
         Dimension dimension = new Dimension(120, 40);
-        JButton beginbutton = new JButton("Начать автоматически");
         beginbutton.setSize(dimension);
         contentPane.add(beginbutton);
 
-        JButton manualbutton = new JButton("Начать пошагово");
         manualbutton.setSize(dimension);
         contentPane.add(manualbutton);
 
-        JButton endbutton = new JButton("Завершить");
         endbutton.setMaximumSize(dimension);
         endbutton.setSize(dimension);
+        endbutton.setEnabled(false);
         contentPane.add(endbutton);
 
         beginbutton.addActionListener(e -> {
-            if (mode != null) {
-                return;
-            }
-            mode = Mode.AUTOMATIC;
+            beginbutton.setEnabled(false);
+            endbutton.setEnabled(true);
+            manualbutton.setEnabled(false);
+
             thread = getWorkingThread();
             thread.start();
         });
 
         manualbutton.addActionListener(e -> {
-            if (mode == null) {
-                mode = Mode.MANUAL;
+            beginbutton.setEnabled(false);
+            endbutton.setEnabled(true);
+
+            if (currentTact == 0) {
                 path.start();
             }
-            if (!mode.equals(Mode.MANUAL)){
-                return;
-            }
+
             statusLabel.setText(" Такт № "+ currentTact +" ");
             currentTact ++;
             if (!path.tact()) {
-                statusLabel.setText(" Ручная симуляция окончена ");
-                currentTact = 0;
+                stopSimulation(" Ручная симуляция окончена ");
             }
         });
 
@@ -73,14 +71,22 @@ public class GUI extends JFrame {
             if (thread != null) {
                 thread.interrupt();
             }
-            mode = null;
-            currentTact = 0;
-            statusLabel.setText(" Cимуляция остановленна ");
+            stopSimulation(" Cимуляция остановленна ");
         });
     }
 
-    private Thread getWorkingThread() {
+    private void stopSimulation(String lable) {
+        endbutton.setEnabled(false);
+        beginbutton.setEnabled(true);
+        manualbutton.setEnabled(true);
 
+        currentTact = 0;
+        statusLabel.setText(lable);
+        path.stop();
+        buttonGroup.clearSelection();
+    }
+
+    private Thread getWorkingThread() {
         return new Thread(() -> {
             path.start();
             while (path.tact()) {
@@ -90,16 +96,12 @@ public class GUI extends JFrame {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                    currentTact = 0;
+                    return;
                 }
             }
-            mode = null;
-            statusLabel.setText(" Автоматическая симуляция окончена ");
-            currentTact = 0;
-        });
-    }
 
-    private enum Mode{
-        MANUAL,
-        AUTOMATIC;
+            stopSimulation(" Ручная симуляция окончена ");
+        });
     }
 }

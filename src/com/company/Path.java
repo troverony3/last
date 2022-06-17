@@ -22,6 +22,10 @@ public class Path {
         path.get(currentItem).startCrossingUpThePath();
     }
 
+    public void stop() {
+        path.forEach(RiverPathItem::stop);
+    }
+
     public boolean tact() {
         if (currentItem == 0) {
             if (path.get(0).haveCrossed()) {

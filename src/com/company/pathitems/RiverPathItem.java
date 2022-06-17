@@ -28,6 +28,10 @@ public abstract class RiverPathItem {
         this.tactsToCross = getTactsToCross(false);
     }
 
+    public void stop(){
+        currentTactSinceStart = 0;
+    }
+
     public void tact() {
         currentTactSinceStart++;
     }

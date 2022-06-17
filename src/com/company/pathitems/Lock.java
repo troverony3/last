@@ -18,6 +18,12 @@ public class Lock extends RiverPathItem {
         return tacksToLevelWater(movingFormDown) + TACTS_TO_OPEN_CLOSE_GATE + TACTS_TO_ENTER + TACTS_TO_PARK + TACTS_TO_OPEN_CLOSE_GATE + TACTS_TO_LEAVE;
     }
 
+    @Override
+    public void stop() {
+        super.stop();
+        empty = true;
+    }
+
     private int tacksToLevelWater(boolean movingFormDown) {
         if (movingFormDown && empty) {
             empty = !empty;
