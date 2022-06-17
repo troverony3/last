@@ -46,15 +46,15 @@ public class Path {
     private static List<RiverPathItem> initPath() {
         final List<RiverPathItem> path = new ArrayList<>();
         path.add(new Canal(860, new JLabel("Канал №52"), new JButton()));
-        path.add(new Lock(new JLabel("шлюз1"), new JButton()));
+        path.add(new Lock(new JLabel("Шлюз №1"), new JButton()));
         path.add(new Canal(1050, new JLabel("Канал №53 "), new JButton()));
         path.add(new Canal(8350, new JLabel("Судовой ход №54"), new JButton()));
         path.add(new Canal(600, new JLabel("Канал №55"), new JButton()));
-        path.add(new Lock(new JLabel("шлюз2"), new JButton()));
+        path.add(new Lock(new JLabel("Шлюз №2"), new JButton()));
         path.add(new Canal(600, new JLabel("Канал №56 "), new JButton()));
         path.add(new Canal(4060, new JLabel("Судовой ход №57 "), new JButton()));
         path.add(new Canal(600, new JLabel("Канал №58"), new JButton()));
-        path.add(new Lock(new JLabel("шлюз 3"), new JButton()));
+        path.add(new Lock(new JLabel("Шлюз № 3"), new JButton()));
         path.add(new Canal(780, new JLabel("Канал №59 "), new JButton()));
         path.add(new Lock(new JLabel("Шлюз №4"), new JButton()));
         path.add(new Canal(780, new JLabel("Канал №60 "), new JButton()));
