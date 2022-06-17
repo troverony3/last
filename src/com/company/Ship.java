@@ -7,12 +7,10 @@ public class Ship {
     private int size;
 
     private final boolean movingFromUp;
-//    private final int startingOnTakt;
 
     public Ship(String name, boolean movingFromUp, int startingOnTakt) {
         this.name = name;
         this.movingFromUp = movingFromUp;
-//        this.startingOnTakt = startingOnTakt;
         //отложенный старт корабля
         this.tactsOnItem = - startingOnTakt;
     }
